@@ -149,7 +149,8 @@ class ListenKbd(threading.Thread):
                     self._disabled=True
                     self.text = "[DISABLED]"
             else:
-                self.text = "%s%s" % (self.label.get_text(), string)
+                if not self._disabled:
+                    self.text = "%s%s" % (self.label.get_text(), string)
 
             self.label.set_text(self.text)
         else:
