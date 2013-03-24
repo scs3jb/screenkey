@@ -144,13 +144,12 @@ class ListenKbd(threading.Thread):
             if string == 'Ctrl+F1  ':
                 if self._disabled:
                     self._disabled=False
+                    self.text = "[ENABLED]"
                 else:
                     self._disabled=True
-
-            if not self._disabled:
-                self.text = "%s%s" % (self.label.get_text(), string)
+                    self.text = "[DISABLED]"
             else:
-                self.text = "[DISABLED]"
+                self.text = "%s%s" % (self.label.get_text(), string)
 
             self.label.set_text(self.text)
         else:
