@@ -74,6 +74,8 @@ REPLACE_KEYS = {
 }
 
 class ListenKbd(threading.Thread):
+    # Add in a shortcut to disable
+    _disabled = False
 
     def __init__(self, label, logger, mode):
         threading.Thread.__init__(self)
@@ -138,7 +140,18 @@ class ListenKbd(threading.Thread):
     def update_text(self, string=None):
         gtk.gdk.threads_enter()
         if not string is None:
-            self.text = "%s%s" % (self.label.get_text(), string)
+            # TODO: make this configurable
+            if string == 'Ctrl+F1  ':
+                if self._disabled:
+                    self._disabled=False
+                else:
+                    self._disabled=True
+
+            if not self._disabled:
+                self.text = "%s%s" % (self.label.get_text(), string)
+            else:
+                self.text = "[DISABLED]"
+
             self.label.set_text(self.text)
         else:
             self.label.set_text("")
@@ -264,6 +277,7 @@ class ListenKbd(threading.Thread):
                     mod = mod + _("Super+")
 
                 if self.cmd_keys['shift']:
+                    mod = mod + _("Shift+")
                     key = key_shift
                 if self.cmd_keys['capslock'] \
                     and ord(key_normal) in range(97,123):
