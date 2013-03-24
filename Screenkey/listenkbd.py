@@ -13,7 +13,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import threading
-import time
 import sys
 import subprocess
 import modmap
@@ -149,14 +148,16 @@ class ListenKbd(threading.Thread):
                     self._disabled=True
                     self.text = "[DISABLED]"
             else:
-                if not self._disabled:
-                    self.text = "%s%s" % (self.label.get_text(), string)
-
-            self.label.set_text(self.text)
+                self.text = "%s%s" % (self.label.get_text(), string)
         else:
-            self.label.set_text("")
-        gtk.gdk.threads_leave()
-        self.label.emit("text-changed")
+            self.text = ""
+
+        if self._disabled and self.text != "[DISABLED]":
+            gtk.gdk.threads_leave()
+        else:
+            self.label.set_text(self.text)
+            gtk.gdk.threads_leave()
+            self.label.emit("text-changed")
 
     def key_press(self, reply):
 
